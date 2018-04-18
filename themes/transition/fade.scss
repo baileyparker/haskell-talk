@@ -11,7 +11,7 @@
 
 .csstransitions.csstransforms {
   .deck-container .slide {
-    @include transition(opacity, 500ms);
+    @include transition(opacity, 0ms);
   }
 
   .deck-container:not(.deck-menu) {

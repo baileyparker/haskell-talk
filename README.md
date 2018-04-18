@@ -1,60 +1,69 @@
-#deck.js
+# A Quick Tour of Haskell
 
-A JavaScript library for building modern HTML presentations. deck.js is flexible enough to let advanced CSS and JavaScript authors craft highly customized decks, but also provides templates and themes for the HTML novice to build a standard slideshow.
+**Functional Tools That You Can Take Home!**
 
-## Quick Start
+*An ACM Talk by Bailey Parker on 2018-03-30*
 
-This repository includes a `boilerplate.html` as a starting point, with all the extensions included. Just [download it](https://github.com/imakewebthings/deck.js/archive/latest.zip), open `boilerplate.html`, and start editing your slides.
+## The Abstract
 
-## Documentation
+> Most students first learn imperatives languages (like C++, Java, or Python)
+> and never look back. Some may be exposed to functional languages for a
+> course, but never find other uses for them. Functional programming, though,
+> can teach useful skills that transfer over to your day-to-day programming in
+> school, internships, and jobs. Join us for a brief survey of the basics of
+> Haskell spanning recursion, composition, immutability, and laziness and
+> concluding by delving into the magic of monads. Along the way you'll pick up
+> some tips for writing clearer, more concise, and less buggy code placed in
+> real world contexts such a ML and CDNs.
 
-Check out the [documentation page](http://imakewebthings.com/deck.js/docs) for more information on the methods, events, and options available in core and all the included extensions.  A sample standard slide deck is included in the package under the `introduction` folder.  You can also [view that sample deck](http://imakewebthings.com/deck.js/introduction) online to play with the available style and transition themes.
+*NB:* The mention of ML and CDNs is a little clickbaity! I provide some much
+simplified examples of how you could use functional to reason about them
+better, but this definitely isn't a detailed talk about either.
 
-## Extensions, Themes, and Related Projects
+## About the Talk
 
-Take a look at [the wiki](https://github.com/imakewebthings/deck.js/wiki) for lists of extensions, themes, and other related goodies.  If you have a publicly available project of your own, feel free to add to the list.
+This talk is part of a larger vision I have to create a series of talks about
+practical design patterns used in the real world to great effect. Many CS
+curriculums focus more on computer science as a science and not an art. And
+while there is undeniably a science to solving problems by composing algorithms
+and using prior art and research to understand a problem, I contend that you
+should also focus on the art of CS. Treat the code you write like an essay; it
+should be well organized, clear, and free of grammatical errors. Code that is
+simple and conveys its intent clearly is a treat for the reader. And this
+directly translates to less friction when changes are necessary in the future.
+Too many programs train students to be *Get It Done™* machines without giving
+much pause to consider the next person to read the code. Just like a writer
+wouldn't publish scribbled notes from a journal, you shouldn't publish code that
+you wouldn't want others to read. Your product should be a labor of love, a
+manuscript with attention to all of the details.
 
-## Dependencies (included in this repository)
+Metaphors aside, this manifests itself in software design patterns. I've found
+course offerings and academic stress to be lacking in this area. And this is
+only to the students' detriment. If/when they enter the commercial workforce,
+they'll be expected to jump into large code bases and contribute code that may
+still be relied on for years to come. Without experience in properly applying
+design patterns, they're forced to pick up this critical skill on the job while
+adjusting to the new environment. I content that software design should be
+taught as early in the process as possible to preclude this.
 
-- [jQuery](http://jquery.com)
-- [Modernizr](http://modernizr.com)
+Students who are frustrated with CS aren't "bad" at it, they just haven't been
+show best practices that will make it easier to focus on learning (instead of
+keeping track of lots of mental state or permuting code with abandon until it
+"just works"). Good practices like writing simple, testable, decoupled,
+testable code go a long way to easing the learning process.
 
-## Tests & Support
+Patterns aren't just pedantry. They arise out of the fact that code is written
+by humans. And, humans aren't prefect. Design patterns allow our limited
+biological computing power to focus solely on the important things so that we
+can more easily write bug-free, beautiful code.
 
-Unit tests are written with [Jasmine](http://jasmine.github.io/) and [jasmine-jquery](https://github.com/velesin/jasmine-jquery). You can [run them here](http://imakewebthings.com/deck.js/test).
+## Instructions
 
-deck.js has been tested with jQuery 1.6+ and works in IE7+, Chrome, FF, Safari, and Opera. The more capable browsers receive greater enhancements, but a basic cutaway slideshow will work for all browsers listed above. Please don't give your presentations in IE6.
+You should be able to view `index.html` in any recent web browser. The most
+recent version is also available on
+[GitHub pages](https://baileyparker.github.io/haskell-talk/).
 
-For any questions or general discussion about deck.js please direct your attention to the [mailing list](http://groups.google.com/group/deckjs) (uses Google groups.)  If you would like to report a bug, please see the [issues page](https://github.com/imakewebthings/deck.js/issues).
+## Typos?
 
-## Printing
-
-Core includes stripped down black and white print styles for the standard slide template that is suitable for handouts.
-
-## Awesome Contributors
-
-- [jbuck](https://github.com/jbuck)
-- [cykod](https://github.com/cykod)
-- [dougireton](https://github.com/dougireton)
-- [awirick](https://github.com/awirick)
-- Daniel Knittl-Frank
-- [alexch](https://github.com/alexch)
-- [twitwi](https://github.com/twitwi)
-
-If you would like to contribute a patch to deck.js please do as much as you can of the following:
-
-- Add or amend Jasmine tests.
-- Add inline documentation.
-- If the standard snippet of an extension changes, please change it in both the introduction deck and the snippet html in the extension folder.
-- If the API changes, it would be awesome to receive a parallel pull request to the gh-pages branch which updates the public-facing documentation.
-
-## License
-
-Copyright (c) 2011-2014 Caleb Troughton
-
-Licensed under the [MIT license](https://github.com/imakewebthings/deck.js/blob/master/MIT-license.txt)
-
-## Donations
-
-[![Gittip donate
-button](http://img.shields.io/gittip/imakewebthings.png)](https://www.gittip.com/imakewebthings/ "Donate weekly to this project using Gittip")
+I fixed a few before uploading, but if you find any, please file an issue or
+submit a PR. Thanks!

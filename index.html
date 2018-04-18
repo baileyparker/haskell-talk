@@ -1,0 +1,1279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=1024, user-scalable=no">
+
+  <title>A Quick Tour of Functional Programming</title>
+
+  <!-- Required stylesheet -->
+  <link rel="stylesheet" media="screen" href="core/deck.core.css">
+
+  <!-- Extension CSS files go here. Remove or add as needed. -->
+  <link rel="stylesheet" media="screen" href="extensions/goto/deck.goto.css">
+  <link rel="stylesheet" media="screen" href="extensions/status/deck.status.css">
+  <link rel="stylesheet" media="screen" href="extensions/scale/deck.scale.css">
+
+  <!-- Style theme. More available in /themes/style/ or create your own. -->
+  <link rel="stylesheet" media="screen" href="themes/style/haskell.css">
+
+  <!-- Transition theme. More available in /themes/transition/ or create your own. -->
+  <link rel="stylesheet" media="screen" href="themes/transition/fade.css">
+
+  <!-- Basic black and white print styles -->
+  <link rel="stylesheet" media="print" href="core/print.css">
+
+  <!-- Required Modernizr file -->
+  <script src="modernizr.custom.js"></script>
+
+  <link rel="stylesheet" href="highlight/styles/haskell.css">
+</head>
+<body>
+  <div class="deck-container">
+
+    <!-- Begin slides. Just make elements with a class of slide. -->
+
+    <section class="slide slide-title">
+      <div class="slide-title-title">
+        <div class="slide-title-group">
+          <div class="slide-title-logo"></div>
+          <h2>A Quick Tour of Haskell</h2>
+        </div>
+        <h4>Functional Tools That You Can Take Home!</h4>
+      </div>
+      <div class="slide-title-byline">
+        <h3>By <strong>Bailey Parker</strong></h3>
+      </div>
+    </section>
+
+    <section class="slide">
+      <pre class="full"><div class="pre-name"><span>Java</span></div><code class="java"><!--
+-->public static void &lt;T extends Comparable&lt;T&gt;&gt; quickSort(T[] arr) {
+    quickSort(arr, 0, arr.length - 1);
+}
+
+private static void &lt;T extends Comparable&lt;T&gt;&gt; quickSort(T[] arr,
+                                                        int lo,
+                                                        int hi) {
+    if (lo &lt; hi) {
+        int p = partition(arr, lo, hi);
+        quickSort(arr, lo, p - 1);
+        quickSort(arr, p + 1, hi);
+    }
+}
+
+private static int &lt;T extends Comparable&lt;T&gt;&gt; partition(T[] arr,
+                                                       int lo,
+                                                       int hi) {
+    T pivot = arr[hi];
+    int i = lo - 1;
+    for (int j = lo; j &lt; hi; j++) {
+        if (arr[j].compareTo(pivot) &lt; 0) {
+            swap(arr, ++i, j);
+        }
+    }
+
+    swap(arr, i, j);
+}
+</code></pre>
+    </section>
+
+    <section class="slide">
+      <pre><div class="pre-name oneline"><span>Haskell</span></div><code class="haskell"><!--
+-->sort :: [Integer] -&gt; [Integer]
+sort [] = []
+sort (pivot:xs) = (sort left) ++ [pivot] ++ (sort right)
+  where left = filter (&lt; pivot) xs
+        right = filter (&gt;= pivot) xs</code></pre>
+    </section>
+
+    <section class="slide slide-centered">
+      <pre>
+Mutability.java:41: error: method solvePuzzle in class Solver cannot be applied to given types;
+        solution = solvePuzzle(puzzle);
+                   ^
+  required: int[][],SolvingStrategy
+  found: int[][]
+  reason: actual and formal argument lists differ in length
+1 error</pre>
+    </section>
+
+    <section class="slide slide-interstitial">
+      <h2>Learn to ❤ Your Compiler</h2>
+    </section>
+
+    <section class="slide">
+      <h2>Type Signatures</h2>
+      <p>Let's start by figuring out the type signatures of Java methods.</p>
+      <pre><div class="pre-name oneline"><span>Java</span></div><code class="java"><!--
+-->static int add(int lhs, int rhs) {
+    // ...
+}</code></pre>
+
+      <pre><div class="pre-name oneline"><span>Haskell</span></div><!--
+--><code class="haskell">add :: Integer -&gt; Integer -&gt; Integer</code></pre>
+
+      <div class="slide">
+        <p>The argument types are listed in order, followed by the return type.</p>
+        <pre><div class="pre-name oneline"><span>Java</span></div><code class="java"><!--
+-->static double weirdAdd(float lhs, int rhs) {
+      // ...
+  }</code></pre>
+
+        <pre><div class="pre-name oneline"><span>Haskell</span></div><!--
+        --><code class="haskell">weirdAdd :: Float -&gt; Integer -&gt; Double</code></pre>
+      </div>
+    </section>
+
+    <section class="slide">
+      <h2>More Type Signatures</h2>
+      <p>Lists use a slightly different syntax.</p>
+      <pre><div class="pre-name oneline"><span>Java</span></div><code class="java"><!--
+-->static float average(int[] numbers) {
+    // ...
+}</code></pre>
+
+      <pre><div class="pre-name oneline"><span>Haskell</span></div><!--
+      --><code class="haskell">average :: [Integer] -&gt; Float</code></pre>
+
+      <div class="slide">
+        <p>But, strings and characters are what you would expect.</p>
+        <pre><div class="pre-name oneline"><span>Java</span></div><code class="java"><!--
+-->static boolean beginsWith(String search, char prefix) {
+      // ...
+  }</code></pre>
+
+        <pre><div class="pre-name oneline"><span>Haskell</span></div><!--
+        --><code class="haskell">beginsWith :: String -&gt; Char -&gt; Bool</code></pre>
+      </div>
+    </section>
+
+    <section class="slide">
+      <h2>Functions as Arguments</h2>
+      <p>What if we pass a function as an argument?</p>
+      <pre><div class="pre-name oneline"><span>Java</span></div><code class="java"><!--
+-->static int findNumber(int[] nums, Predicate&lt;Integer&gt; isWanted) {
+    for (int num : nums) {
+        if (isWanted.test(num)) { return num; }
+    }
+
+    throw new NumberNotFoundException(i);
+}</code></pre>
+
+      <pre><div class="pre-name oneline"><span>Java</span></div><code class="java"><!--
+-->findNumber(oddNumbers, num -&gt; MathUtils.isPrime(num));</code></pre>
+
+      <pre><div class="pre-name oneline"><span>Java</span></div><code class="java"><!--
+-->interface Predicate&lt;T&gt; {
+    boolean test(T t);
+}</code></pre>
+
+      <pre class="slide"><div class="pre-name oneline"><span>Java</span></div><!--
+      --><code class="java">findNumber(oddNumbers, MathUtils::isPrime);</code></pre>
+
+      <pre class="slide"><!--
+         --><div class="pre-name oneline"><span>Haskell</span></div><code class="haskell"><!--
+-->findNumber :: [Integer] -&gt; (Integer -&gt; Bool) -&gt; Integer</code></pre>
+    </section>
+
+    <section class="slide slide-interstitial">
+      <h2>The Basics</h2>
+    </section>
+
+    <section class="slide">
+      <h2>Basic Operations</h2>
+      <p>Math, boolean, and string operations are straightfoward.</p>
+      <pre><div class="pre-name oneline"><span>Haskell</span></div><code class="haskell"><!--
+-->&gt; 4 * (1 - 1/3 + 1/5 - 1/7 + 1/9 - 1/11 + 1/13 - 1/15 + 1/17 - 1/19)
+3.0418396189294032</code></pre>
+      <pre><div class="pre-name oneline"><span>Haskell</span></div><code class="haskell"><!--
+-->&gt; (True &amp;&amp; False) || (True &amp;&amp; True)
+True</code></pre>
+      <pre><div class="pre-name oneline"><span>Haskell</span></div><code class="haskell"><!--
+-->&gt; 8 /= 2 * 2 * 2  -- not equal
+False</code></pre>
+      <pre><div class="pre-name oneline"><span>Haskell</span></div><code class="haskell"><!--
+-->&gt; 1.0 == 1
+True</code></pre>
+      <pre><div class="pre-name oneline"><span>Haskell</span></div><code class="haskell"><!--
+-->&gt; "To understand recursion " ++ "we must first understand recursion"
+"To understand recursion we must first understand recursion"</code></pre>
+    </section>
+
+    <section class="slide">
+      <h2>Basic Operations</h2>
+
+      <p>But you don't get implicit casting...</p>
+      <pre><div class="pre-name oneline"><span>Haskell</span></div><code class="haskell"><!--
+-->&gt; "A random number: " ++ 4
+<span class="hljs-repl-error">&lt;interactive&gt;:2:24: error:
+  • No instance for (Num String) arising from the literal ‘4’
+  • In the second argument of ‘(++)’, namely ‘4’
+    In the expression: "A random number: " ++ 4</span></code></pre>
+
+      <pre><div class="pre-name oneline"><span>Haskell</span></div><code class="haskell"><!--
+-->&gt; "A random number: " ++ show 4
+"A random number: 4"</code></pre>
+
+      <p>Why didn't concatenating a string and integer work? Let's look at the types!</p>
+      <div class="slide">
+        <pre><div class="pre-name oneline"><span>Haskell</span></div><code class="haskell"><!--
+-->(++) :: String -&gt; String -&gt; String</code></pre>
+
+        <pre><div class="pre-name oneline"><span>Haskell</span></div><code class="haskell"><!--
+-->show :: Integer -&gt; String</code></pre>
+      </div>
+    </section>
+
+    <section class="slide">
+      <h2>Basic Operations</h2>
+
+      <p>As an exercise, let's recall the types of some of these functions</p>
+      <pre><div class="pre-name oneline"><span>Haskell</span></div><code class="haskell"><!--
+-->(+) :: Integer -&gt; Integer -&gt; Integer
+(-) :: Integer -&gt; Integer -&gt; Integer
+(*) :: Integer -&gt; Integer -&gt; Integer
+(/) :: Integer -&gt; Integer -&gt; Integer
+
+(&amp;&amp;) :: Bool -&gt; Bool -&gt; Bool
+(||) :: Bool -&gt; Bool -&gt; Bool
+</code></pre>
+    </section>
+
+    <section class="slide">
+      <h2>Our First Function</h2>
+      <p>In Java, we'd probably want to express factorial iteratively:</p>
+      <pre><div class="pre-name oneline"><span>Java</span></div><code class="java"><!--
+-->public static int factorial(int n) {
+    int product = 1;
+
+    for (int i = 1; i &lt;= n; i++) {
+        product *= i;
+    }
+
+    return product;
+}</code></pre>
+
+      <div class="slide">
+        <p>But in Haskell, we need to think <strong>recursively</strong>:</p>
+        <pre><div class="pre-name oneline"><span>Java</span></div><code class="java"><!--
+-->public static int factorial(int n) {
+   if (n == 0) {
+     return 1;
+   }
+
+   return n * factorial(n - 1);
+}</code></pre>
+      </div>
+    </section>
+
+    <section class="slide">
+      <h2>Our First Function</h2>
+      <pre><div class="pre-name oneline"><span>Java</span></div><code class="java"><!--
+-->public static int factorial(int n) {
+   if (n == 0) {
+     return 1;
+   }
+
+   return n * factorial(n - 1);
+}</code></pre>
+
+      <p>Translated "verbatim" to Haskell, this would look like:</p>
+      <pre><div class="pre-name oneline"><span>Haskell</span></div><code class="haskell"><!--
+-->factorial :: Integer -&gt; Integer
+factorial n = if n == 0
+                 then 1
+                 else n * factorial (n - 1)</code></pre>
+
+      <p class="slide">Do you see any issues with these implementations?</p>
+    </section>
+
+    <section class="slide">
+      <h2>Lists</h2>
+
+      <p>The bread and butter of functional programming is lists.</p>
+
+      <pre><div class="pre-name oneline"><span>GHCI</span></div><code class="haskell"><!--
+-->&gt; ["lists", "must", "be", "homogenous"]
+["lists", "must", "be", "homogenous"]</code></pre>
+
+      <pre><div class="pre-name oneline"><span>GHCI</span></div><code class="haskell"><!--
+-->&gt; ["so", "this", "breaks", 22]
+<span class="hljs-repl-error">&lt;interactive&gt;:5:26: error:
+    • No instance for (Num String) arising from the literal ‘22’
+    • In the expression: 22
+      In the expression: ["so", "this", "breaks", 22]</span></code></pre>
+
+      <p>The above is syntactic sugar for an important function called <strong>cons</strong>:</p>
+      <pre><div class="pre-name oneline"><span>GHCI</span></div><code class="haskell"><!--
+-->&gt; "cons" : "prepends" : ["to", "lists"]
+["cons", "prepends", "to", "lists"]</code></pre>
+      <pre><div class="pre-name oneline"><span>Haskell</span></div><code class="haskell"><!--
+-->(:) :: a -&gt; [a] -&gt; [a]</code></pre>
+    </section>
+
+    <section class="slide">
+      <h2>Type Variables</h2>
+
+      <pre><div class="pre-name oneline"><span>Haskell</span></div><code class="haskell"><!--
+-->(:) :: a -&gt; [a] -&gt; [a]</code></pre>
+
+      <p>This is similar to generics in Java:</p>
+      <pre><div class="pre-name oneline"><span>Java</span></div><code class="java"><!--
+-->public static &lt;T&gt; T[] cons(T item, T[] items) {
+    // ...
+}</code></pre>
+
+      <p>So, <code>a</code> or <code>T</code> can be replaced with any type.</p>
+
+      <pre><div class="pre-name oneline"><span>GHCI</span></div><code class="haskell"><!--
+-->&gt; 1 : [2, 3]
+[1, 2, 3]
+&gt; "one" : ["two", "three"]
+["one", "two", "three"]</code></pre>
+
+      <pre><div class="pre-name oneline"><span>Java</span></div><code class="java"><!--
+-->cons(1, new Integer[] {2, 3}); // {1, 2, 3}
+cons("uno", new String[] {"dos", "tres"}); // {"uno","dos","tres"}</code></pre>
+    </section>
+
+    <section class="slide">
+      <h2>Lists</h2>
+
+      <p>Strings are just lists of characters!</p>
+
+      <pre><div class="pre-name oneline"><span>GHCI</span></div><code class="haskell"><!--
+-->&gt; ['J','o','h','n',' ','H','o','p','k','i','n']
+"John Hopkin"
+&gt; 'J':'o':'h':'n':' ':'H':'o':'p':'k':'i':'n':[]
+"John Hopkin"</code></pre>
+
+      <p>And concatenation works on generic lists, not just strings!</p>
+      <pre><div class="pre-name oneline"><span>GHCI</span></div><code class="haskell"><!--
+-->&gt; [1, 2, 3] ++ [4, 5, 6]
+[1, 2, 3, 4, 5, 6]</code></pre>
+
+      <p>And that's because the type of concatenate is actually general:</p>
+      <pre><div class="pre-name oneline"><span>Haskell</span></div><code class="haskell"><!--
+-->(++) :: [a] -&gt; [a] -&gt; [a]</code></pre>
+    </section>
+
+    <section class="slide">
+      <h2>Lists</h2>
+
+      <p>Constructing lists of numbers is tedious, so we use ranges instead:</p>
+
+      <pre><div class="pre-name oneline"><span>GHCI</span></div><code class="haskell"><!--
+-->&gt; [1..10]
+[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+
+&gt; [10,9..1]
+[10, 9, 8, 7, 6, 5, 4, 3, 2, 1]</code></pre>
+    </section>
+
+    <section class="slide">
+      <h2>Lists</h2>
+
+      <p>There are lots of builtin functions for working with lists.</p>
+
+      <pre><div class="pre-name oneline"><span>GHCI</span></div><code class="haskell"><!--
+-->&gt; length [2, 3, 4, 5, 6]
+5
+
+&gt; intercalate ", " ["foo", "bar", "baz"]
+"foo, bar, baz"
+
+&gt; concat [[1, 2, 3], [2, 4, 6]]
+[1, 2, 3, 2, 4, 6]
+
+&gt; head ["foo", "bar", "baz"]
+"foo"</code></pre>
+    </section>
+
+    <section class="slide">
+      <h2>Lists</h2>
+      <p>What about infinite lists?</p>
+
+      <pre><div class="pre-name oneline"><span>GHCI</span></div><code class="haskell"><!--
+-->&gt; [1..]
+[1, 2, 3, 4, 5,  -- forever and ever
+
+&gt; head [1..]
+1</code></pre>
+
+      <div class="slide">
+        <p>Why doesn't the first one never finish, but the second does?
+        <strong>Laziness</strong></p>
+
+        <div class="slide">
+          <pre><div class="pre-name oneline"><span>Python</span></div><code class="python"><!--
+-->def positive_integers():
+    i = 1
+    while True:
+        yield i
+        i += 1
+
+&gt; numbers = positive_integers()
+&gt; next(numbers)
+1
+&gt; next(numbers)
+2</code></pre>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <h2>Lists</h2>
+      <p>But what happens if we do this:</p>
+
+      <pre><div class="pre-name oneline"><span>GHCI</span></div><code class="haskell"><!--
+-->&gt; head []
+*** Exception: Prelude.head: empty list</code></pre>
+
+      <p>This is bad. It compiles, but you get a runtime error. We can do better!</p>
+    </section>
+
+    <section class="slide">
+      <h2>Guard Syntax</h2>
+
+      <p>Our previous implementation is bad, because it uses control structures.</p>
+      <pre><div class="pre-name oneline"><span>Haskell</span></div><code class="haskell"><!--
+-->factorial :: Integer -&gt; Integer
+factorial n = if n == 0
+                 then 1
+                 else n * factorial (n - 1)</code></pre>
+
+      <p>The preferred approach when you have conditions is guard syntax:</p>
+      <pre><div class="pre-name oneline"><span>Haskell</span></div><code class="haskell"><!--
+-->factorial :: Integer -&gt; Integer
+factorial n | n == 0    = 1
+            | otherwise = n * factorial (n - 1)</code></pre>
+
+      <p>This syntax also allows multiple branches:</p>
+      <pre><div class="pre-name oneline"><span>Haskell</span></div><code class="haskell"><!--
+-->factorial :: Integer -&gt; Integer
+factorial n | n &lt; 0  = error "complex number"
+            | n == 0    = 1
+            | otherwise = n * factorial (n - 1)</code></pre>
+
+      <p>But for this there's an even better approach.</p>
+    </section>
+
+    <section class="slide">
+      <h2>Pattern Matching</h2>
+
+      <pre><div class="pre-name oneline"><span>Haskell</span></div><code class="haskell"><!--
+-->factorial :: Integer -&gt; Integer
+factorial n = if n == 0
+                 then 1
+                 else n * factorial (n - 1)</code></pre>
+
+      <p><strong>Pattern matching</strong> works by choosing which expression to evaluate (which
+      definition of a function to use) based on argument patterns:</p>
+      <pre><div class="pre-name oneline"><span>Haskell</span></div><code class="haskell"><!--
+-->factorial :: Integer -&gt; Integer
+factorial 0 = 1
+factorial n = n * factorial (n - 1)</code></pre>
+
+      <div class="slide">
+        <p>You can use <code>_</code> (hole) to indicate that you don't care about the value of an
+        argument (matches any value):</p>
+
+        <pre><div class="pre-name oneline"><span>Haskell</span></div><code class="haskell"><!--
+-->ignoreSecond :: a -&gt; b -&gt; a
+ignoreSecond a _ = a
+</code></pre>
+      </div>
+    </section>
+
+    <section class="slide">
+      <h2>Pattern Matching</h2>
+
+      <p>As an example say we wanted to write a function to sum a list of numbers:</p>
+      <pre><div class="pre-name oneline"><span>Python</span></div><code class="python"><!--
+-->def sum(numbers):
+    total = 0
+    for number in numbers:
+        total += number
+    return total</code></pre>
+
+      <div class="slide">
+        <p>We need to write this recursively to translate it to Haskell:</p>
+
+        <pre><div class="pre-name oneline"><span>Python</span></div><code class="python"><!--
+-->def sum(numbers):
+    return numbers[0] + sum(numbers[1:])</code></pre>
+
+        <p>But you may notice this has a bug!</p>
+
+        <div class="slide">
+          <pre><div class="pre-name oneline"><span>Python</span></div><code class="python"><!--
+-->def sum(numbers):
+    if len(numbers) == 0:
+        return 0
+    return numbers[0] + sum(numbers[1:])</code></pre>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <h2>Pattern Matching</h2>
+
+      <pre><div class="pre-name oneline"><span>Python</span></div><code class="python"><!--
+-->def sum(numbers):
+    if len(numbers) == 0:
+        return 0
+    return numbers[0] + sum(numbers[1:])</code></pre>
+
+      <p>With a correct Python implementation, we can see a clear path to the Haskell version:</p>
+      <pre><div class="pre-name oneline"><span>Haskell</span></div><code class="haskell"><!--
+-->sum :: [Integer] -&gt; Integer
+sum [] = 0
+sum (x:xs) = x + sum xs</code></pre>
+    </section>
+
+    <section class="slide">
+      <h2>Pattern Matching</h2>
+
+      <pre><div class="pre-name oneline"><span>Haskell</span></div><code class="haskell"><!--
+-->sum :: [Integer] -&gt; Integer
+sum [] = 0
+sum (x:xs) = x + sum xs</code></pre>
+
+      <p>Cons can be used in pattern matching to destructure lists:</p>
+      <pre><div class="pre-name oneline"><span>Haskell</span></div><code class="haskell"><!--
+-->sum [1, 2, 3] = sum (1 : [2, 3])
+                 = 1 + sum [2, 3]
+                 = 1 + sum (2 : [3])
+                 = 1 + 2 + sum [3]
+                 = 1 + 2 + sum (3 : [])
+                 = 1 + 2 + 3 + sum []
+                 = 1 + 2 + 3 + 0</code></pre>
+
+      <p>This is a useful pattern! We can use it for other operations on lists.</p>
+    </section>
+
+    <section class="slide">
+      <h2>Pattern Matching</h2>
+
+      <p>We can also build a function to compute the product of a list of numbers.</p>
+
+      <pre><div class="pre-name oneline"><span>Haskell</span></div><code class="haskell"><!--
+-->sum :: [Integer] -&gt; Integer
+sum [] = 0
+sum (x:xs) = x + sum xs</code></pre>
+
+      <pre><div class="pre-name oneline"><span>Haskell</span></div><code class="haskell"><!--
+-->product :: [Integer] -&gt; Integer
+product [] = 1
+product (x:xs) = x * product xs</code></pre>
+
+      <div class="slide">
+        <p>These work as you would expect:</p>
+
+        <pre><div class="pre-name oneline"><span>GHCI</span></div><code class="haskell"><!--
+-->&gt; sum [1, 3, 5]
+8
+
+&gt; product [1, 3, 5]
+15</code></pre>
+
+        <p>But wait, isn't <code>n!</code> the product of all integers from <code>1</code> to
+        <code>n</code>?</p>
+      </div>
+    </section>
+
+    <section class="slide">
+      <h2>Pattern Matching</h2>
+
+      <p>So, when we originally had:</p>
+
+      <pre><div class="pre-name oneline"><span>Haskell</span></div><code class="haskell"><!--
+-->factorial :: Integer -&gt; Integer
+factorial n = 1
+factorial n = n * factorial (n - 1)</code></pre>
+
+      <div class="slide">
+        <p>We can combine our <code>product</code> and ranges to arrive at:</p>
+
+        <pre><div class="pre-name oneline"><span>Haskell</span></div><code class="haskell"><!--
+-->factorial :: Integer -&gt; Integer
+factorial n = product [1..n]</code></pre>
+
+        <div class="slide">
+          <div class="take-home-tip">
+            <h3>Small, Composable Functions</h3>
+
+            <p>Prefer small functions that do one thing well. For more complex tasks, compose these
+            small functions together. This makes you code more easily testable and more obviously
+            correct.</p>
+
+            <p>Also known as the <em>single resposibility principle</em>.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <h2>Pattern Matching</h2>
+
+      <p>Returning our list operations, we should notice a pattern:</p>
+
+      <pre><div class="pre-name oneline"><span>Haskell</span></div><code class="haskell"><!--
+-->sum :: [Integer] -&gt; Integer
+sum [] = 0
+sum (x:xs) = x + sum xs
+
+product :: [Integer] -&gt; Integer
+product [] = 1
+product (x:xs) = x * product xs
+
+train :: Model -&gt; Example -&gt; Model
+emptyModel :: Model
+-- Leave it to the pros...
+
+machineLearn :: [Example] -&gt; Model
+machineLearn [] = emptyModel
+machineLearn (x:xs) = train (machineLearn xs) x</code></pre>
+
+      <p>All of these have some default value for the base case (empty list), and apply a function
+      recursively on this list until that base case is reached. There is an opportunity to
+      refactor!</p>
+    </section>
+
+    <section class="slide">
+      <h2>Pattern Matching</h2>
+
+      <pre><div class="pre-name oneline"><span>Haskell</span></div><code class="haskell"><!--
+-->foldl :: (a -&gt; b -&gt; a) -&gt; a -&gt; [b] -&gt; a
+foldl _ initial [] = initial
+foldl action initial (x:xs) = action (foldl action initial xs) x</code></pre>
+
+      <p>The works exactly how our <code>sum</code> did!</p>
+      <pre><div class="pre-name oneline"><span>Haskell</span></div><code class="haskell"><!--
+-->sum             [1, 2] = sum (1 : [2])
+                          = 1 +   sum [2]
+                          = 1 +   sum (2 : [])
+                          = 1 +   2 +   sum []
+                          = 1 +   2 +   0</code></pre>
+
+      <pre><div class="pre-name oneline"><span>Haskell</span></div><code class="haskell"><!--
+-->foldl f initial [1, 2] = foldl f initial (1 : [2])
+                          = 1 `f` (foldl f initial [2])
+                          = 1 `f` (foldl f initial (2 : []))
+                          = 1 `f` 2 `f` (foldl f initial [])
+                          = 1 `f` 2 `f` initial</code></pre>
+    </section>
+
+    <section class="slide">
+      <h2>Pattern Matching</h2>
+
+      <pre><div class="pre-name oneline"><span>Haskell</span></div><code class="haskell"><!--
+-->foldl :: (a -&gt; b -&gt; a) -&gt; a -&gt; [b] -&gt; a</code></pre>
+
+      <p>With this behavior extracted, we can rewrite our other functions:</p>
+
+      <pre><div class="pre-name oneline"><span>Haskell</span></div><code class="haskell"><!--
+-->sum :: [Integer] -&gt; Integer
+sum xs = foldl (+) 0 xs
+
+product :: [Integer] -&gt; Integer
+product xs = foldl (*) 1 xs
+
+train :: Model -&gt; Example -&gt; Model
+emptyModel :: Model
+-- Leave it to the pros...
+
+machineLearn :: [Example] -&gt; Model
+machineLearn examples = foldl train emptyModel examples</code></pre>
+    </section>
+
+    <section class="slide">
+      <h2>Pattern Matching</h2>
+
+      <pre><div class="pre-name oneline"><span>Haskell</span></div><code class="haskell"><!--
+-->sum xs = foldl (+) 0 xs
+product xs = foldl (*) 1 xs
+machineLearn examples = foldl train emptyModel examples</code></pre>
+
+      <p>This is a worthwhile refactoring, because if for example, we test <code>foldl</code> and
+      <code>train</code> and are sure that they are correct, then we know that
+      <code>machineLearn</code> is also correct!</p>
+      <div class="take-home-tip">
+        <h3>Don't Repeat Yourself!</h3>
+
+        <p>Extract common behavior between functions into a small, composable function to make your
+        functions easier to reason about and more obviously correct.</p>
+      </div>
+    </section>
+
+    <section class="slide">
+      <h2>Pattern Matching</h2>
+
+      <p>It turns out there are other functions like this. What if we wanted a list of prime
+      numbers?</p>
+      <p>One (naive) way to obtain this is to go through a list of all positive integers and pull
+      out the ones that are prime.</p>
+
+      <pre><div class="pre-name oneline"><span>Haskell</span></div><code class="haskell"><!--
+-->-- Assuming we had a:
+isPrime :: Integer -&gt; Bool
+
+primes :: [Integer]
+primes = filter isPrime [2..]</code></pre>
+
+      <p>We could do this with a function like:</p>
+
+      <pre><div class="pre-name oneline"><span>Haskell</span></div><code class="haskell"><!--
+-->filter (a -&gt; Bool) -&gt; [a] -&gt; [a]
+filter predicate xs = foldl collect [] xs
+  where collect :: [a] -&gt; a -&gt; [a]
+        collect collected item | predicate item = item:collected
+                               | otherwise      = collected</code></pre>
+
+      <pre><div class="pre-name oneline"><span>Haskell</span></div><code class="haskell"><!--
+-->foldl :: (c -&gt; d -&gt; c) -&gt; c -&gt; [d] -&gt; c</code></pre>
+    </section>
+
+    <section class="slide">
+      <h2>Pattern Matching</h2>
+
+      <p>What if we had a list of videos that we needed to re-encode for different clients
+      (different qualities and sizes for mobile devices, for example) for a video CDN? We have a
+      function that does the re-encoding and a list of videos.</p>
+
+      <pre><div class="pre-name oneline"><span>Haskell</span></div><code class="haskell"><!--
+-->encodeVideo :: Video -&gt; [EncodedVideo]
+
+encodeVideos :: [Video] -&gt; [[EncodedVideo]]
+encodeVideos videos = map encodeVideo videos
+
+map :: (a -&gt; b) -&gt; [a] -&gt; [b]
+map f (x:xs) = f x : map f xs</code></pre>
+
+      <p>See the mistake? Haskell does!</p>
+
+      <div class="slide">
+        <pre><div class="pre-name oneline"><span>Haskell</span></div><code class="haskell"><!--
+--><span class="hljs-repl-error">&lt;interactive&gt;:2:1: warning: [-Wincomplete-patterns]
+    Pattern match(es) are non-exhaustive
+        In an equation for ‘map’: Patterns not matched: _ []</span></code></pre>
+
+        <div class="slide">
+          <pre><div class="pre-name oneline"><span>Haskell</span></div><code class="haskell"><!--
+-->map (a -&gt; b) -&gt; [a] -&gt; [b]
+map f [] = []
+map f (x:xs) = f x : map f xs</code></pre>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <h2>Pattern Matching</h2>
+
+      <div class="take-home-tip">
+        <h3>Check Your Cases</h3>
+
+        <p>Use enums and inversion of control to have the compiler check that you have implemented
+        all cases. In switch statements, the compilers can usually point out missed cases. In other
+        cases, instead of code like this:</p>
+
+        <pre><div class="pre-name oneline"><span>Java</span></div><code class="java"><!--
+-->if (entry instanceof Book) {
+  return ((Book) entry).getIsbn();
+} else if (entry instanceof Movie) {
+  return ((Movie) entry).getBarcode();
+}</code></pre>
+
+        <p>Prefer code like this:</p>
+
+        <pre><div class="pre-name oneline"><span>Java</span></div><code class="java"><!--
+-->interface Identifiable {
+  public String getIdentifier();
+}
+
+class Book implements Identifiable {
+  public String getIdentifier() { return this.getIsbn(); }
+}
+
+class Movie implements Identifiable {
+  public String getIdentifier() { return this.getBarcode(); }
+}
+
+// And then use it like...
+return entry.getIdentifier();</code></pre>
+      </div>
+    </section>
+
+    <section class="slide">
+      <h2>Pattern Matching</h2>
+
+      <p>What if we want to consider pairs of items from two lists at the same time?</p>
+
+      <pre><div class="pre-name oneline"><span>Haskell</span></div><code class="haskell"><!--
+-->zip :: [a] -&gt; [b] -&gt; [(a, b)]
+zip (x:xs) (y:ys) = (x, y) : zip xs ys
+zip _ _ = []</code></pre>
+
+      <pre><div class="pre-name oneline"><span>GHCI</span></div><code class="haskell"><!--
+-->&gt; zip ["Compilers", "PL", "Parallel"] [62, 95, 89]
+[("Compilers", 62), ("PL", 95), ("Parallel", 89)]</code></pre>
+
+      <p>This family of functions leads us to our next tip:</p>
+      <div class="take-home-tip">
+        <h3>Use Lazy Functional Utilities</h3>
+
+        <p>Prefer lazy functional tools like <code>map</code>, <code>filter</code>,
+        <code>zip</code>. They don't construct lists in memory, so they're often more
+        efficient.</p>
+
+        <p>Python has functions of this name. In Java 8, look at the
+        <a href="https://docs.oracle.com/javase/8/docs/api/java/util/stream/package-summary.html">
+        Stream API</a>.</p>
+      </div>
+    </section>
+
+    <section class="slide">
+      <h2>Pattern Matching</h2>
+
+      <p>As an example, instead of doing:</p>
+      <pre><div class="pre-name oneline"><span>Python</span></div><code class="python"><!--
+-->courses = ["Compilers", "PL", "Parallel"]
+grades = [62, 95, 89]
+
+for i, course in enumerate(courses):
+    print(f'I got a {grades[i]} in {course}!')</code></pre>
+
+      <p>Prefer this:</p>
+      <pre><div class="pre-name oneline"><span>Python</span></div><code class="python"><!--
+-->courses = ["Compilers", "PL", "Parallel"]
+grades = [62, 95, 89]
+
+for course, grade in zip(courses, grades):
+    print(f'I got a {grade} in {course}!')</code></pre>
+
+      <p>Because there are no explicit indexes, it's hard to pair two things incorrectly. And
+      you'll also never run into any <code>IndexError</code>s or
+      <code>ArrayOutOfBoundsException</code>s!</p>
+    </section>
+
+    <section class="slide">
+      <h2>Currying</h2>
+
+      <p>In Haskell, a function always takes one parameter and returns some value.</p>
+      <div class="slide">
+        <p>Wait, <strong>what?</strong></p>
+
+        <div class="slide">
+          <pre><div class="pre-name oneline"><span>Haskell</span></div><code class="haskell"><!--
+-->(+)     :: Integer -&gt; (Integer -&gt; Integer)
+(1 +)   ::            Integer -&gt; Integer
+(1 + 1) ::                       Integer</code></pre>
+
+          <div class="slide">
+            <p>This means we can do:</p>
+
+            <pre><div class="pre-name oneline"><span>GHCI</span></div><code class="haskell"><!--
+-->&gt; map (2 *) [1..5]
+[2, 4, 6, 8, 10]</code></pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide slide-interstitial">
+      <h2>Putting It All Together</h2>
+    </section>
+
+    <section class="slide">
+      <h2>Quicksort</h2>
+
+      <p>Can you implement quicksort correctly from memory? Do you get all of the bounds correct?
+      How about the termination conditions?</p>
+
+      <pre class="full"><div class="pre-name"><span>Java</span></div><code class="java"><!--
+-->public static void &lt;T extends Comparable&lt;T&gt;&gt; quickSort(T[] arr) {
+    quickSort(arr, 0, arr.length - 1);
+}
+
+private static void &lt;T extends Comparable&lt;T&gt;&gt; quickSort(T[] arr,
+                                                        int lo,
+                                                        int hi) {
+    if (lo &lt; hi) {
+        int p = partition(arr, lo, hi);
+        quickSort(arr, lo, p - 1);
+        quickSort(arr, p + 1, hi);
+    }
+}
+
+private static int &lt;T extends Comparable&lt;T&gt;&gt; partition(T[] arr,
+                                                       int lo,
+                                                       int hi) {
+    T pivot = arr[hi];
+    int i = lo - 1;
+    for (int j = lo; j &lt; hi; j++) {
+        if (arr[j].compareTo(pivot) &lt; 0) {
+            swap(arr, ++i, j);
+        }
+    }
+
+    swap(arr, i, j);
+}
+</code></pre>
+    </section>
+
+    <section class="slide">
+      <h2>Quicksort</h2>
+
+      <p>Wouldn't you rather write?</p>
+
+      <pre><div class="pre-name oneline"><span>Haskell</span></div><code class="haskell"><!--
+-->sort :: [Integer] -&gt; [Integer]
+sort [] = []
+sort (pivot:xs) = (sort left) ++ [pivot] ++ (sort right)
+  where left = filter (&lt; pivot) xs
+        right = filter (&gt;= pivot) xs</code></pre>
+    </section>
+
+    <section class="slide">
+      <h3>Typeclasses</h3>
+
+      <p>What if we wanted to make a quicksort work for lists of anything that can be ordered?</p>
+
+      <pre><div class="pre-name oneline"><span>Haskell</span></div><code class="haskell"><!--
+-->sort :: [a] -&gt; [a]
+sort [] = []
+sort (pivot:xs) = (sort left) ++ [pivot] ++ (sort right)
+  where left = filter (&lt; pivot) xs
+        right = filter (&gt;= pivot) xs
+
+<span class="hljs-repl-error">&lt;interactive&gt;:16:24: error:
+    • No instance for (Ord a) arising from a use of ‘&lt;’
+      Possible fix:
+        add (Ord a) to the context of the type signature for:
+            sort :: forall a. [a] -&gt; [a]
+    • In the first argument of ‘filter’, namely ‘(&lt; pivot)’
+      In the expression: filter (&lt; pivot) xs
+      In an equation for ‘left’: left = filter (&lt; pivot) xs
+
+&lt;interactive&gt;:17:25: error:
+    • No instance for (Ord a) arising from a use of ‘&gt;=’
+      Possible fix:
+        add (Ord a) to the context of the type signature for:
+            sort :: forall a. [a] -&gt; [a]
+    • In the first argument of ‘filter’, namely ‘(&gt;= pivot)’
+      In the expression: filter (&gt;= pivot) xs
+      In an equation for ‘right’: right = filter (&gt;= pivot) xs</span></code></pre>
+    </section>
+
+    <section class="slide">
+      <h2>Typeclasses</h2>
+
+      <p>So let's take its advice!</p>
+
+      <pre><div class="pre-name oneline"><span>Haskell</span></div><code class="haskell"><!--
+-->sort :: Ord a =&gt; [a] -&gt; [a]
+sort [] = []
+sort (pivot:xs) = (sort left) ++ [pivot] ++ (sort right)
+  where left = filter (&lt; pivot) xs
+        right = filter (&gt;= pivot) xs</code></pre>
+
+      <p>So why did this work?</p>
+
+      <div class="slide">
+        <pre><div class="pre-name oneline"><span>Haskell</span></div><code class="haskell"><!--
+-->class Ord a where
+    compare :: a -&gt; a -&gt; Ordering  -- either LT, EQ, or GT</code></pre>
+      </div>
+    </section>
+
+    <section class="slide">
+      <h2>Typeclasses</h2>
+
+      <p>Other interesting typeclasses:</p>
+
+      <pre><div class="pre-name oneline"><span>Haskell</span></div><code class="haskell"><!--
+-->class Eq a where
+    (==) :: a -&gt; a -&gt; Bool
+
+class Show a where
+    show :: a -&gt; String
+
+class Num a where
+    (+) :: a -&gt; a -&gt; a
+    (-) :: a -&gt; a -&gt; a
+    (*) :: a -&gt; a -&gt; a
+    negate :: a -&gt; a
+    abs :: a -&gt; a
+    signum :: a -&gt; a
+    fromInteger :: Integer -&gt; a</code></pre>
+    </section>
+
+    <section class="slide slide-interstitial">
+      <h2>Representing Data</h2>
+    </section>
+
+    <section class="slide">
+      <h2>Data</h2>
+
+      <p>How do we represent data?</p>
+
+      <pre><div class="pre-name oneline"><span>Java</span></div><code class="java"><!--
+-->public class Product {
+    public String name;
+    public float cost;
+
+    public Product(String name, float cost) {
+        this.name = name;
+        this.cost = cost; // NOTE: NEVER use floats for currency
+    }
+
+    public int hashCode() { return this.name.hashCode(); }
+
+    public boolean equals(Object other) {
+        if (other instanceof Product) {
+            return this.name == ((Product) other).name;
+        }
+
+        return false;
+    }
+
+    public String toString() {
+        return "Product: " + this.name + " - Cost: $" + this.cost;
+    }
+}</code></pre>
+    </section>
+
+    <section class="slide">
+      <h2>Data</h2>
+
+      <p>What could go wrong with that Java code?</p>
+
+      <div class="slide">
+        <pre><div class="pre-name oneline"><span>Java</span></div><code class="java"><!--
+-->HashMap&lt;String, Product&gt; products = new HashMap&lt;&gt;();
+
+Product slapChop = new Product("Slap Chop", 4.95f);
+products.put(slapChop.name, slapChop);
+
+System.out.println(products.get("Slap Chop"));
+// Product: Slap Chop - Cost: $4.95
+
+// They decided to rebrand
+slapChop.name = "Slap Chop!";
+
+System.out.println(products.get("Slap Chop!"));
+// null</code></pre>
+
+        <div class="slide">
+          <p>Because <code>Product</code> was mutable, it was hard to see this problem.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <h2>Data</h2>
+
+      <p>Haskell has a simple answer. Data is immutable by default. If you want to change data, you
+      need to reconstruct it.</p>
+
+      <pre><div class="pre-name oneline"><span>Haskell</span></div><code class="haskell"><!--
+-->data Product = Product String Float
+
+describeProduct :: Product -&gt; String
+describeProduct (Product name cost) =
+  "Product: " ++ name ++ " - Costs: $" ++ (show cost)
+
+recommend :: Product -&gt; String
+recommend (Product name _) =
+  "Other customers also bought: " ++ name
+
+discount :: Product -&gt; Product
+discount (Product name cost) = Product name (cost / 2)</code></pre>
+
+      <div class="take-home-tip">
+        <h3>Immutability</h3>
+
+        <p>Prefer immutable objects where possible. It is easier to reason about things that don't
+        change.</p>
+      </div>
+    </section>
+
+    <section class="slide">
+      <h2>Data</h2>
+
+      <p>There are also other advantages to Haskell's approach. Consider:</p>
+
+      <pre><div class="pre-name oneline"><span>Java</span></div><code class="java"><!--
+-->public class Cart {
+    protected List&lt;Product&gt; products;
+
+    public boolean isEmpty() {
+        return this.products.size() == 0;
+    }
+}</code></pre>
+
+      <pre><div class="pre-name oneline"><span>Haskell</span></div><code class="haskell"><!--
+-->data Cart = Cart [Product]
+
+isEmpty :: Cart -&gt; Bool
+isEmpty (Cart []) = True
+isEmpty _ = False</code></pre>
+
+      <div class="slide">
+        <p>Every value is not nullable in Haskell!</p>
+
+        <div class="take-home-tip">
+          <h3>Null Considered Harmful</h3>
+
+          <p>Avoid <code>null</code> where possible! Use static analysis tools to ensure that
+          values you expect to be non-null aren't actually null.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <h2>Data</h2>
+
+      <p>But what if we want a nullable value?</p>
+
+      <pre><div class="pre-name oneline"><span>Haskell</span></div><code class="haskell"><!--
+-->lookupBarcode :: String -&gt; Product
+lookupBarcode = -- How do we handle failure?</code></pre>
+
+      <div class="slide">
+        <pre><div class="pre-name oneline"><span>Haskell</span></div><code class="haskell"><!--
+-->data Maybe a = Just a
+             | Nothing</code></pre>
+
+        <div class="slide">
+          <pre><div class="pre-name oneline"><span>Haskell</span></div><code class="haskell"><!--
+-->lookupBarcode :: String -&gt; Maybe Product
+lookupBarcode "01234" = Just $ Product "Tide Pods" 4.95f
+lookupBarcode _       = Nothing</code></pre>
+
+          <pre><div class="pre-name oneline"><span>GHCI</span></div><code class="haskell"><!--
+-->&gt; lookupBarcode "01234"
+Just (Product "Tide Pods" 4.95f)
+
+&gt; lookupBarcode "45678"
+Nothing</code></pre>
+
+          <pre><div class="pre-name oneline"><span>Haskell</span></div><code class="haskell"><!--
+-->($) : (a -&gt; b) -&gt; a -&gt; b</code></pre>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <h2>Data</h2>
+
+      <p>But then how do we compose functions that return a <code>Maybe</code>?</p>
+
+      <p>This won't work:</p>
+
+      <pre><div class="pre-name oneline"><span>Haskell</span></div><code class="haskell"><!--
+-->recommend :: Product -&gt; String
+lookupBarcode :: String -&gt; Maybe Product
+
+recommendBarcode :: String -&gt; String
+recommendBarcode barcode = recommend $ lookupBarcode barcode
+
+<span class="hljs-repl-error">&lt;interactive&gt;:26:40: error:
+    • Couldn't match expected type ‘Product’
+                  with actual type ‘Maybe a0’
+    • In the second argument of ‘($)’, namely ‘lookupBarcode barcode’
+      In the expression: recommend $ lookupBarcode barcode
+      In an equation for ‘recommendBarcode’:
+          recommendBarcode barcode = recommend $ lookupBarcode barcode</span></code></pre>
+    </section>
+
+    <section class="slide">
+      <h2>Data</h2>
+
+      <p>To do this we'll take advantage of a typeclass called <code>Functor</code>.</p>
+
+      <pre><div class="pre-name oneline"><span>Haskell</span></div><code class="haskell"><!--
+-->class Functor f where
+    (&lt;$&gt;) :: (a -&gt; b) -&gt; f a -&gt; f b</code></pre>
+
+      <p>Doesn't this look familiar?</p>
+
+      <pre><div class="pre-name oneline"><span>Haskell</span></div><code class="haskell"><!--
+-->map :: (a -&gt; b) -&gt; [a] -&gt; [b]</code></pre>
+
+      <div class="slide">
+        <p>For <code>Maybe</code> it is defined like so:</p>
+
+        <pre><div class="pre-name oneline"><span>Haskell</span></div><code class="haskell"><!--
+-->instance Functor Maybe where
+    f &lt;$&gt; (Just x) = Just $ f x
+    _ &lt;$&gt; Nothing = Nothing</code></pre>
+
+        <div class="slide">
+          <p>We can take advantage of this and write:</p>
+
+          <pre><div class="pre-name oneline"><span>Haskell</span></div><code class="haskell"><!--
+-->recommend :: Product -&gt; String
+lookupBarcode :: String -&gt; Maybe Product
+
+recommendBarcode :: String -&gt; Maybe String
+recommendBarcode barcode = recommend &lt;$&gt; lookupBarcode barcode</code></pre>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <h2>Resources</h2>
+
+      <p><a href="http://learnyouahaskell.com/">Learn You a Haskell for Great Good</a></p>
+      <p><a href="https://www.haskell.org/hoogle/">Hoogle</a> - for when you need a function</p>
+    </section>
+
+    <section class="slide slide-interstitial">
+      <h2>Questions?</h2>
+    </section>
+
+    <!-- End slides. -->
+
+    <!-- Begin extension snippets. Add or remove as needed. -->
+
+    <!-- deck.status snippet -->
+    <p class="deck-status" aria-role="status">
+      <span class="deck-status-current"></span>
+      /
+      <span class="deck-status-total"></span>
+    </p>
+
+    <!-- deck.goto snippet -->
+    <form action="." method="get" class="goto-form">
+      <label for="goto-slide">Go to slide:</label>
+      <input type="text" name="slidenum" id="goto-slide" list="goto-datalist">
+      <datalist id="goto-datalist"></datalist>
+      <input type="submit" value="Go">
+    </form>
+
+    <!-- End extension snippets. -->
+  </div>
+
+<!-- Required JS files. -->
+<script src="jquery.min.js"></script>
+<script src="core/deck.core.js"></script>
+
+<!-- Extension JS files. Add or remove as needed. -->
+<script src="highlight/highlight.pack.js"></script>
+<script src="extensions/goto/deck.goto.js"></script>
+<script src="extensions/status/deck.status.js"></script>
+<script src="extensions/scale/deck.scale.js"></script>
+
+<!-- Initialize the deck. You can put this in an external file if desired. -->
+<script>
+  $(function() {
+    $.deck('.slide');
+  });
+
+  hljs.initHighlightingOnLoad();
+</script>
+</body>
+</html>
